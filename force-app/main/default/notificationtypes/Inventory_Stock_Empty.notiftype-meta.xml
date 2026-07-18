@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Inventory Stock Empty</customNotifTypeName>
+    <description>Sent when an item's available quantity changes to zero.</description>
+    <desktop>true</desktop>
+    <masterLabel>Inventory Stock Empty</masterLabel>
+    <mobile>true</mobile>
+</CustomNotificationType>

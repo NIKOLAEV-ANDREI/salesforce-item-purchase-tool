@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to configured recipients when an item is out of stock.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Inventory Stock Empty</name>
+    <style>none</style>
+    <subject>An item is out of stock</subject>
+    <type>text</type>
+</EmailTemplate>

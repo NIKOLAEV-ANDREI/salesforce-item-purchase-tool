@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Notify_Stock_Empty_Recipients</name>
+        <label>Notify Stock Empty Recipients</label>
+        <locationX>200</locationX>
+        <locationY>130</locationY>
+        <actionName>InventoryNotificationAction</actionName>
+        <actionType>apex</actionType>
+        <inputParameters>
+            <name>itemId</name>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>67.0</apiVersion>
+    <interviewLabel>Notify When Item Stock Empty {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Notify When Item Stock Empty</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Notify_Stock_Empty_Recipients</targetReference>
+        </connector>
+        <filterFormula>AND({!$Record.AvailableQuantity__c} = 0, {!$Record__Prior.AvailableQuantity__c} &gt; 0)</filterFormula>
+        <object>Item__c</object>
+        <recordTriggerType>Update</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
