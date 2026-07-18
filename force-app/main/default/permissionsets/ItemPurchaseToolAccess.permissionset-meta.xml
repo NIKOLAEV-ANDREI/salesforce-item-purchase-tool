@@ -30,6 +30,11 @@
         <field>Purchase__c.TotalItems__c</field>
         <readable>true</readable>
     </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>User.IsManager__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
     <label>Item Purchase Tool Access</label>
     <objectPermissions>
         <allowCreate>true</allowCreate>

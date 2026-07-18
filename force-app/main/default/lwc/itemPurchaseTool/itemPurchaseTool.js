@@ -2,11 +2,14 @@ import { LightningElement, wire } from 'lwc';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import { getFieldValue, getRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import USER_ID from '@salesforce/user/Id';
 import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
 import ACCOUNT_NUMBER from '@salesforce/schema/Account.AccountNumber';
 import ACCOUNT_INDUSTRY from '@salesforce/schema/Account.Industry';
 import getItems from '@salesforce/apex/ItemPurchaseController.getItems';
 import checkout from '@salesforce/apex/PurchaseCheckoutController.checkout';
+import getSuggestedImage from '@salesforce/apex/UnsplashImageController.getSuggestedImage';
+import IS_MANAGER from '@salesforce/schema/User.IsManager__c';
 
 const ACCOUNT_FIELDS = [ACCOUNT_NAME, ACCOUNT_NUMBER, ACCOUNT_INDUSTRY];
 
@@ -20,7 +23,9 @@ export default class ItemPurchaseTool extends NavigationMixin(LightningElement) 
     selectedItemId;
     isLoading = false;
     isCheckingOut = false;
+    isSavingItem = false;
     showCart = false;
+    isItemFormOpen = false;
     filterOptionsLoaded = false;
     searchTimeout;
     cartItems = [];
@@ -40,6 +45,9 @@ export default class ItemPurchaseTool extends NavigationMixin(LightningElement) 
 
     @wire(getRecord, { recordId: '$recordId', fields: ACCOUNT_FIELDS })
     account;
+
+    @wire(getRecord, { recordId: USER_ID, fields: [IS_MANAGER] })
+    currentUser;
 
     get hasRecordId() {
         return Boolean(this.recordId);
@@ -111,6 +119,10 @@ export default class ItemPurchaseTool extends NavigationMixin(LightningElement) 
 
     get isCheckoutDisabled() {
         return !this.hasCartItems || this.isCheckingOut;
+    }
+
+    get isManager() {
+        return getFieldValue(this.currentUser.data, IS_MANAGER) === true;
     }
 
     async loadItems() {
@@ -225,6 +237,43 @@ export default class ItemPurchaseTool extends NavigationMixin(LightningElement) 
 
     showToast(title, message, variant) {
         this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
+    }
+
+    openItemForm() {
+        this.isItemFormOpen = true;
+    }
+
+    closeItemForm() {
+        if (!this.isSavingItem) {
+            this.isItemFormOpen = false;
+        }
+    }
+
+    async handleItemSubmit(event) {
+        event.preventDefault();
+        const fields = event.detail.fields;
+        this.isSavingItem = true;
+
+        try {
+            fields.Image__c = await getSuggestedImage({ searchTerm: fields.Name });
+            this.template.querySelector('lightning-record-edit-form').submit(fields);
+        } catch (error) {
+            this.isSavingItem = false;
+            this.showToast('Image request failed', error.body?.message || 'Unable to get an image from Unsplash.', 'error');
+        }
+    }
+
+    handleItemSuccess() {
+        this.isSavingItem = false;
+        this.isItemFormOpen = false;
+        this.filterOptionsLoaded = false;
+        this.loadItems();
+        this.showToast('Item created', 'A new catalog item with an Unsplash image was created.', 'success');
+    }
+
+    handleItemError(event) {
+        this.isSavingItem = false;
+        this.showToast('Item creation failed', event.detail.message, 'error');
     }
 
     toOptions(fieldName, allLabel) {
