@@ -9,5 +9,5 @@
     <openType>newWindow</openType>
     <position>none</position>
     <protected>false</protected>
-    <url>/lightning/n/Item_Purchase_Tool?c__recordId={!Account.Id}</url>
+    <url>/lightning/cmp/c__itemPurchaseTool?c__recordId={!Account.Id}</url>
 </WebLink>
