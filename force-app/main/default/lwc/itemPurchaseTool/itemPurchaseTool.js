@@ -105,6 +105,10 @@ export default class ItemPurchaseTool extends NavigationMixin(LightningElement) 
         return this.cartItems.reduce((total, item) => total + item.quantity, 0);
     }
 
+    get cartLabel() {
+        return `Cart (${this.cartItemCount})`;
+    }
+
     get cartTotal() {
         return this.cartItems.reduce((total, item) => total + item.lineTotal, 0);
     }
