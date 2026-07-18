@@ -25,8 +25,72 @@
                         </div>
                     </dl>
                     <p class="slds-var-m-top_large slds-text-color_weak">
-                        Item catalog and cart will be added in the next steps.
+                        Choose items from the catalog to start a purchase.
                     </p>
+
+                    <section class="catalog slds-var-m-top_large">
+                        <div class="catalog-header">
+                            <h2 class="slds-text-heading_small">Item catalog</h2>
+                            <span class="slds-badge">{itemCount} items</span>
+                        </div>
+
+                        <div class="filters slds-var-m-vertical_medium">
+                            <lightning-combobox
+                                label="Family"
+                                name="selectedFamily"
+                                value={selectedFamily}
+                                options={familyOptions}
+                                onchange={handleFilterChange}>
+                            </lightning-combobox>
+                            <lightning-combobox
+                                label="Type"
+                                name="selectedType"
+                                value={selectedType}
+                                options={typeOptions}
+                                onchange={handleFilterChange}>
+                            </lightning-combobox>
+                            <lightning-input
+                                type="search"
+                                label="Search by name or description"
+                                value={searchTerm}
+                                oninput={handleSearchChange}>
+                            </lightning-input>
+                        </div>
+
+                        <template if:true={isLoading}>
+                            <lightning-spinner alternative-text="Loading items" size="small"></lightning-spinner>
+                        </template>
+
+                        <template if:true={hasItems}>
+                            <div class="item-grid">
+                                <template for:each={items} for:item="item">
+                                    <article key={item.Id} class="item-card">
+                                        <template if:true={item.Image__c}>
+                                            <img class="item-image" src={item.Image__c} alt={item.Name} />
+                                        </template>
+                                        <div class="slds-var-p-around_medium">
+                                            <h3 class="slds-text-heading_small">{item.Name}</h3>
+                                            <p class="slds-truncate slds-var-m-vertical_x-small">{item.Description__c}</p>
+                                            <p><strong>{item.Price__c}</strong> per item</p>
+                                            <p class="slds-text-body_small">Available: {item.AvailableQuantity__c}</p>
+                                            <lightning-button
+                                                class="slds-var-m-top_small"
+                                                label="Details"
+                                                data-id={item.Id}
+                                                onclick={openDetails}>
+                                            </lightning-button>
+                                        </div>
+                                    </article>
+                                </template>
+                            </div>
+                        </template>
+
+                        <template if:false={hasItems}>
+                            <template if:false={isLoading}>
+                                <p class="slds-text-color_weak">No items match the selected filters.</p>
+                            </template>
+                        </template>
+                    </section>
                 </template>
 
                 <template if:true={account.error}>
@@ -41,4 +105,36 @@
             </template>
         </div>
     </lightning-card>
+
+    <template if:true={isDetailsOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-label="Item details" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon
+                        class="slds-modal__close"
+                        icon-name="utility:close"
+                        alternative-text="Close"
+                        onclick={closeDetails}>
+                    </lightning-button-icon>
+                    <h2 class="slds-text-heading_medium">{selectedItem.Name}</h2>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium">
+                    <template if:true={selectedItemImageUrl}>
+                        <img class="details-image slds-var-m-bottom_medium" src={selectedItemImageUrl} alt={selectedItem.Name} />
+                    </template>
+                    <lightning-record-view-form record-id={selectedItemId} object-api-name="Item__c">
+                        <lightning-output-field field-name="Description__c"></lightning-output-field>
+                        <lightning-output-field field-name="Family__c"></lightning-output-field>
+                        <lightning-output-field field-name="Type__c"></lightning-output-field>
+                        <lightning-output-field field-name="Price__c"></lightning-output-field>
+                        <lightning-output-field field-name="AvailableQuantity__c"></lightning-output-field>
+                    </lightning-record-view-form>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={closeDetails}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
 </template>

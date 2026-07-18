@@ -13,3 +13,35 @@ dd {
     font-size: 1rem;
     margin: 0.25rem 0 0;
 }
+
+.catalog-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.filters,
+.item-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.item-card {
+    border: 1px solid var(--lwc-colorBorder, #dddbda);
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.item-image,
+.details-image {
+    display: block;
+    max-height: 13rem;
+    object-fit: cover;
+    width: 100%;
+}
+
+.details-image {
+    border-radius: 0.25rem;
+    max-width: 24rem;
+}
