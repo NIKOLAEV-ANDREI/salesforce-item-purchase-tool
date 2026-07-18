@@ -1,0 +1,15 @@
+# Salesforce CLI local state and authentication
+.sf/
+.sfdx/
+
+# JavaScript dependencies and test coverage
+node_modules/
+coverage/
+
+# Editor and operating system files
+.vscode/*.log
+.DS_Store
+Thumbs.db
+
+# Temporary local artifacts
+tmp/

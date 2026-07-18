@@ -1,0 +1,7 @@
+# Local Salesforce CLI state
+.sf/
+.sfdx/
+
+# Local tooling files
+node_modules/
+.vscode/*.log
