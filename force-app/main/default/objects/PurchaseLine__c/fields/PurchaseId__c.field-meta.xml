@@ -5,6 +5,7 @@
     <referenceTo>Purchase__c</referenceTo>
     <relationshipLabel>Purchase Lines</relationshipLabel>
     <relationshipName>PurchaseLines</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
     <type>MasterDetail</type>
     <writeRequiresMasterRead>false</writeRequiresMasterRead>
 </CustomField>
