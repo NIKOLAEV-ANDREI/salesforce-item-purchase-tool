@@ -1,0 +1,44 @@
+<template>
+    <lightning-card title="Item Purchase Tool" icon-name="standard:product_item">
+        <div class="slds-var-p-around_medium">
+            <template if:false={hasRecordId}>
+                <p class="slds-text-color_error">
+                    Open this page from an Account using the Item Purchase Tool button.
+                </p>
+            </template>
+
+            <template if:true={hasRecordId}>
+                <template if:true={hasAccount}>
+                    <h2 class="slds-text-heading_small slds-var-m-bottom_small">Account</h2>
+                    <dl class="account-details">
+                        <div>
+                            <dt>Name</dt>
+                            <dd>{accountName}</dd>
+                        </div>
+                        <div>
+                            <dt>Account Number</dt>
+                            <dd>{accountNumber}</dd>
+                        </div>
+                        <div>
+                            <dt>Industry</dt>
+                            <dd>{accountIndustry}</dd>
+                        </div>
+                    </dl>
+                    <p class="slds-var-m-top_large slds-text-color_weak">
+                        Item catalog and cart will be added in the next steps.
+                    </p>
+                </template>
+
+                <template if:true={account.error}>
+                    <p class="slds-text-color_error">{errorMessage}</p>
+                </template>
+
+                <template if:false={hasAccount}>
+                    <template if:false={account.error}>
+                        <lightning-spinner alternative-text="Loading account"></lightning-spinner>
+                    </template>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

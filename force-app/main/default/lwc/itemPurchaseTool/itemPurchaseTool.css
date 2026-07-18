@@ -1,0 +1,15 @@
+.account-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+    gap: 1rem;
+}
+
+dt {
+    color: var(--lwc-colorTextLabel, #444);
+    font-size: 0.75rem;
+}
+
+dd {
+    font-size: 1rem;
+    margin: 0.25rem 0 0;
+}
