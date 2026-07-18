@@ -31,7 +31,10 @@
                     <section class="catalog slds-var-m-top_large">
                         <div class="catalog-header">
                             <h2 class="slds-text-heading_small">Item catalog</h2>
-                            <span class="slds-badge">{itemCount} items</span>
+                            <div>
+                                <span class="slds-badge slds-var-m-right_small">{itemCount} items</span>
+                                <lightning-button label="Cart ({cartItemCount})" icon-name="utility:cart" onclick={openCart}></lightning-button>
+                            </div>
                         </div>
 
                         <div class="filters slds-var-m-vertical_medium">
@@ -78,6 +81,14 @@
                                                 label="Details"
                                                 data-id={item.Id}
                                                 onclick={openDetails}>
+                                            </lightning-button>
+                                            <lightning-button
+                                                class="slds-var-m-top_small slds-var-m-left_x-small"
+                                                label="Add to cart"
+                                                variant="brand"
+                                                data-id={item.Id}
+                                                disabled={item.isOutOfStock}
+                                                onclick={addToCart}>
                                             </lightning-button>
                                         </div>
                                     </article>
@@ -132,6 +143,42 @@
                 </div>
                 <footer class="slds-modal__footer">
                     <lightning-button label="Close" onclick={closeDetails}></lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+
+    <template if:true={isCartOpen}>
+        <section role="dialog" tabindex="-1" aria-modal="true" aria-label="Shopping cart" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close" icon-name="utility:close" alternative-text="Close" onclick={closeCart}></lightning-button-icon>
+                    <h2 class="slds-text-heading_medium">Cart</h2>
+                </header>
+                <div class="slds-modal__content slds-var-p-around_medium">
+                    <template if:true={hasCartItems}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead><tr><th>Item</th><th>Quantity</th><th>Unit cost</th><th>Total</th><th></th></tr></thead>
+                            <tbody>
+                                <template for:each={cartItems} for:item="item">
+                                    <tr key={item.itemId}>
+                                        <td>{item.name}</td>
+                                        <td>{item.quantity}</td>
+                                        <td><lightning-formatted-number value={item.unitCost} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td><lightning-formatted-number value={item.lineTotal} format-style="currency" currency-code="USD"></lightning-formatted-number></td>
+                                        <td><lightning-button-icon icon-name="utility:delete" alternative-text="Remove" data-id={item.itemId} onclick={removeFromCart}></lightning-button-icon></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                        <p class="slds-text-align_right slds-text-heading_small slds-var-m-top_medium">Total: <lightning-formatted-number value={cartTotal} format-style="currency" currency-code="USD"></lightning-formatted-number></p>
+                    </template>
+                    <template if:false={hasCartItems}><p class="slds-text-color_weak">Your cart is empty.</p></template>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Close" onclick={closeCart}></lightning-button>
+                    <lightning-button class="slds-var-m-left_small" label="Checkout" variant="brand" disabled={isCheckoutDisabled} onclick={handleCheckout}></lightning-button>
                 </footer>
             </div>
         </section>
